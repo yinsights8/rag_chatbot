@@ -34,7 +34,7 @@ def main(query: str, pdf_path: str):
 
 
 if __name__ == "__main__":
-    query = "who is batman?"
+    query = input ("Query: ")
     results = main(query, datapath)
 
     print("Query:", results["query"])
