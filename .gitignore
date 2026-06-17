@@ -6,4 +6,5 @@ data/
 *.egg-info/
 .ipynb_checkpoints/
 __pycache__
-instructions/
+# instructions/
+pipeline.mp4

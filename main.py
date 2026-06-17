@@ -7,7 +7,7 @@ import os
 load_dotenv()
 
 datapath = "E:/india_project/rag-aws/instructions/AWS_Customer_Agreement.pdf"
-
+TOP_K = int(os.getenv("TOP_K", 5))  # Default to 4 if not set in environment variables
 
 def main(query: str, pdf_path: str):
     """Run the full RAG pipeline: ingest, retrieve, generate."""
@@ -16,13 +16,13 @@ def main(query: str, pdf_path: str):
     parsed_chunks = parse_and_chunk(pdf_path)
     retriever.build_index(parsed_chunks)
 
-    retrieved_chunks = retriever.retrieve(query, top_k=5)
-    answer = generate_answer(query, retrieved_chunks)
+    retrieved_chunks = retriever.retrieve(query, top_k=TOP_K)
+    answer, used_chunks = generate_answer(query, retrieved_chunks)
     found = not answer_not_found(answer)
 
     source_chunks = [
         {"text": c["text"], "page": c["page"], "score": c["score"]}
-        for c in retrieved_chunks
+        for c in used_chunks
     ]
 
     return {
