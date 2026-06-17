@@ -55,6 +55,7 @@ def ask(request: AskRequest):
     try:
         start = time.perf_counter()
         chunks = retriever.retrieve(request.query, top_k=TOP_K)
+        # return answer and the chunks that were used to generate it
         answer, used_chunks = generate_answer(request.query, chunks)
         latency_ms = (time.perf_counter() - start) * 1000
 
