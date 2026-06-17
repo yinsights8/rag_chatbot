@@ -1,0 +1,70 @@
+AWS Responsibilities & Data Privacy
+
+What security measures does AWS implement to protect customer content against accidental or unlawful loss? [FACTUAL] [EASY]
+Can AWS move customer content to a different region without the customer's consent? [FACTUAL] [EASY]
+AWS provides 6 months' notice before discontinuing a material service functionality — is this correct? [WRONG FACT] [TRAP]
+Under what three circumstances is AWS not obligated to provide advance notice before discontinuing a service? [FACTUAL] [MEDIUM]
+Does the AWS Privacy Notice apply to customer content stored in S3 buckets? [FACTUAL] [MEDIUM]
+
+
+Customer Responsibilities
+
+How many AWS accounts can a customer create per email address under the standard agreement? [FACTUAL] [EASY]
+Is the customer responsible for unauthorized access to their AWS account caused by a third-party contractor? [FACTUAL] [MEDIUM]
+What encryption standards does AWS require customers to use for protecting their content? [NOT IN DOCS] [TRAP]
+What must a customer do immediately upon discovering an End User has violated the agreement? [FACTUAL] [MEDIUM]
+Does AWS provide support directly to End Users by default? [FACTUAL] [EASY]
+
+
+Fees & Payment
+
+How frequently does AWS calculate and bill service fees under normal circumstances? [FACTUAL] [EASY]
+What is the maximum interest rate AWS can charge on late payments per month? [FACTUAL] [MEDIUM]
+AWS requires 60 days' advance notice before increasing fees for existing services — true or false? [WRONG FACT] [TRAP]
+What happens if a customer provides a valid exemption certificate for Indirect Taxes? [FACTUAL] [MEDIUM]
+Does the agreement specify a minimum monthly spend threshold before AWS can bill more frequently due to fraud suspicion? [NOT IN DOCS] [TRAP]
+Who bears the cost of cross-border withholding taxes under the agreement? [FACTUAL] [HARD]
+
+
+Suspension & Termination
+
+List all four conditions under which AWS can immediately suspend a customer's access to services. [FACTUAL] [MEDIUM]
+Are customers entitled to service credits under SLAs during a period of suspension? [FACTUAL] [EASY]
+The agreement states AWS must give 60 days' notice to terminate for convenience — is this correct? [WRONG FACT] [TRAP]
+How long after the Termination Date will AWS refrain from removing customer content from its systems? [FACTUAL] [MEDIUM]
+Under what condition can AWS terminate the agreement immediately if a third-party software partner relationship changes? [FACTUAL] [HARD]
+Can a customer retrieve their content after termination if they have outstanding unpaid amounts? [FACTUAL] [MEDIUM]
+
+
+Proprietary Rights
+
+What rights does AWS acquire over customer content under Section 6 of the agreement? [FACTUAL] [EASY]
+Does the agreement allow customers to decompile AWS services if permitted by applicable law? [FACTUAL] [HARD]
+What happens to suggestions a customer submits to AWS regarding service improvements? [FACTUAL] [MEDIUM]
+Can customers publicly announce their use of AWS services through a press release? [FACTUAL] [MEDIUM]
+Does the agreement grant customers co-ownership of any jointly developed AWS features? [NOT IN DOCS] [TRAP]
+
+
+Indemnification
+
+Under Section 7, is AWS required to defend customers against all types of third-party claims? [FACTUAL] [MEDIUM]
+What four remedies can AWS elect when a service is found to infringe a third party's intellectual property rights? [FACTUAL] [HARD]
+Does the indemnification obligation under Section 7.2 cover infringement arising from combining AWS services with a customer's own software? [FACTUAL] [HARD]
+What SLA penalty does AWS pay customers when an intellectual property claim causes service downtime? [NOT IN DOCS] [TRAP]
+Can a party agree to a non-monetary settlement without the other party's written consent? [FACTUAL] [MEDIUM]
+
+
+Limitations of Liability
+
+Does the liability cap under Section 9 cover payment obligations arising under Section 7? [FACTUAL] [HARD]
+What is the aggregate liability cap period — the last 6 months or 12 months of payments? [WRONG FACT] [TRAP]
+Under the Malaysia-specific terms, which type of damages listed in the standard Section 9.1 is removed? [FACTUAL] [HARD]
+Are consequential damages excluded from liability under the standard AWS agreement? [FACTUAL] [EASY]
+
+
+Dispute Resolution & Governing Law
+
+How are disputes resolved if the applicable AWS Contracting Party is Amazon Web Services, Inc.? [FACTUAL] [MEDIUM]
+Which arbitration body handles disputes involving Amazon Web Services Malaysia Sdn. Bhd.? [FACTUAL] [HARD]
+For disputes involving AWS India, how many arbitrators are appointed and how are they selected? [FACTUAL] [HARD]
+Does the agreement allow class action arbitration proceedings against AWS? [FACTUAL] [MEDIUM]
