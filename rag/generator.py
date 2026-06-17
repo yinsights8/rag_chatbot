@@ -55,10 +55,9 @@ def answer_not_found(response: str) -> bool:
     return any(m.lower() in response.lower() for m in markers)
 
 
-
+# split the model's SOURCES_USED citation line out of the answer text
 def parse_sources_used(raw_response: str, num_chunks: int) -> tuple[str, list[int]]:
-      """Split the model's SOURCES_USED citation line out of the answer text.
-
+      """
       Returns the cleaned answer (citation line removed) and the 1-based source
       indices the model claims it used, filtered to the valid range.
       """
