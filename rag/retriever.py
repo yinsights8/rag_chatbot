@@ -30,10 +30,10 @@ class Retriever:
         """Embed all chunks and upsert into ChromaDB. Persists automatically."""
         # Clear existing data so re-ingestion is idempotent
         self.client.delete_collection(COLLECTION_NAME)
-        # self.collection = self.client.get_or_create_collection(
-        #     name=COLLECTION_NAME,
-        #     metadata={"hnsw:space": "cosine"},
-        # )
+        self.collection = self.client.get_or_create_collection(
+            name=COLLECTION_NAME,
+            metadata={"hnsw:space": "cosine"},
+        )
 
         texts = [c["text"] for c in chunks]
         embeddings = self.model.encode(
