@@ -6,22 +6,22 @@ from rag.schema import IngestRequest, IngestResponse, AskRequest, AskResponse, A
 from rag.ingestor import parse_and_chunk
 from rag.retriever import Retriever
 from rag.generator import generate_answer, answer_not_found
-# from rag.db import (
-#     init_db,
-#     log_query,
-#     get_most_frequent_questions,
-#     get_no_answer_queries,
-#     get_average_latency_ms,
-# )
+from rag.db import (
+    init_db,
+    log_query,
+    get_most_frequent_questions,
+    get_no_answer_queries,
+    get_average_latency_ms,
+)
 
 DEFAULT_PDF_PATH = "instructions/AWS_Customer_Agreement.pdf"
 
 app = FastAPI(title="RAG Document Q&A API")
 retriever = Retriever()
 
-# @app.on_event("startup")
-# def on_startup():
-#     init_db()
+@app.on_event("startup")
+def on_startup():
+    init_db()
 
 
 @app.post("/ingest", response_model=IngestResponse)
@@ -59,7 +59,7 @@ def ask(request: AskRequest):
 
         found = not answer_not_found(answer)
         top_score = max((c["score"] for c in chunks), default=None)
-        # log_query(request.query, answer, found, top_score, latency_ms)
+        log_query(request.query, answer, found, top_score, latency_ms)
 
         source_chunks = [{"text": c["text"], "page": c["page"], "score": c["score"]} for c in chunks]
         return AskResponse(query=request.query, answer=answer, found=found, source_chunks=source_chunks)
@@ -69,13 +69,13 @@ def ask(request: AskRequest):
         raise HTTPException(status_code=500, detail="An internal error occurred while processing the query.")
 
 
-# @app.get("/analytics", response_model=AnalyticsResponse)
-# def analytics():
-#     try:
-#         return AnalyticsResponse(
-#             most_frequent_questions=get_most_frequent_questions(),
-#             no_answer_queries=get_no_answer_queries(),
-#             average_latency_ms=get_average_latency_ms(),
-#         )
-#     except Exception:
-#         raise HTTPException(status_code=500, detail="Failed to compute analytics.")
+@app.get("/analytics", response_model=AnalyticsResponse)
+def analytics():
+    try:
+        return AnalyticsResponse(
+            most_frequent_questions=get_most_frequent_questions(),
+            no_answer_queries=get_no_answer_queries(),
+            average_latency_ms=get_average_latency_ms(),
+        )
+    except Exception:
+        raise HTTPException(status_code=500, detail="Failed to compute analytics.")
