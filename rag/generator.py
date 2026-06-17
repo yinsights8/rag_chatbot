@@ -1,6 +1,7 @@
 # generator.py
 
 from openai import OpenAI
+import re
 import os 
 from dotenv import load_dotenv
 
@@ -25,10 +26,17 @@ def model_client():
 
 
 
+SOURCES_USED_MARKER = "SOURCES_USED:"
+
 SYSTEM_PROMPT = f"""You are a precise document assistant. Answer questions ONLY using the
 provided context excerpts. If the answer cannot be found in the context, respond with exactly:
 "{NOT_FOUND_MESSAGE}"
-Do not make up facts. Do not use outside knowledge."""
+Do not make up facts. Do not use outside knowledge.
+
+After your answer, on a new line, write exactly which numbered sources you relied on to
+construct the answer, in this format: {SOURCES_USED_MARKER} 1,3
+If you could not answer from the context, write: {SOURCES_USED_MARKER} none"""
+
 
 
 def build_prompt(query: str, chunks: list[dict]) -> str:
@@ -47,10 +55,43 @@ def answer_not_found(response: str) -> bool:
     return any(m.lower() in response.lower() for m in markers)
 
 
-def generate_answer(query: str, chunks: list[dict]) -> str:
-    """Run the full generation step and return the answer string."""
+
+def parse_sources_used(raw_response: str, num_chunks: int) -> tuple[str, list[int]]:
+      """Split the model's SOURCES_USED citation line out of the answer text.
+
+      Returns the cleaned answer (citation line removed) and the 1-based source
+      indices the model claims it used, filtered to the valid range.
+      """
+      matches = list(re.finditer(rf"^\s*{re.escape(SOURCES_USED_MARKER)}\s*(.*)$",
+  raw_response, re.IGNORECASE | re.MULTILINE))
+      if not matches:
+          return raw_response.strip(), []
+      match = matches[-1]
+
+      clean_answer = raw_response[: match.start()].strip()
+      value = match.group(1).strip().lower()
+      if value == "none" or not value:
+          return clean_answer, []
+
+      indices = []
+      for part in value.split(","):
+          part = part.strip()
+          if part.isdigit():
+              index = int(part)
+              if 1 <= index <= num_chunks and index not in indices:
+                  indices.append(index)
+      return clean_answer, indices
+
+
+
+
+def generate_answer(query: str, chunks: list[dict]) -> tuple[str, list[dict]]:
+    """
+    Run the full generation step.
+    Returns the answer text and the chunk(s) the model actually cited as used.
+    """
     if not chunks or max(c["score"] for c in chunks) < RETRIEVAL_CONFIDENCE_THRESHOLD:
-        return NOT_FOUND_MESSAGE
+        return NOT_FOUND_MESSAGE, []
 
     client = model_client()
     response = client.chat.completions.create(
@@ -62,4 +103,13 @@ def generate_answer(query: str, chunks: list[dict]) -> str:
         temperature=0.1,
         max_tokens=512,
     )
-    return response.choices[0].message.content.strip()
+    raw = response.choices[0].message.content.strip()
+    clean_answer, indices = parse_sources_used(raw, len(chunks))
+
+    if answer_not_found(clean_answer):
+        return clean_answer, []
+    if indices:
+        return clean_answer, [chunks[i - 1] for i in indices]
+    # Model didn't follow the citation format — fall back to the single
+    # highest-scoring retrieved chunk.
+    return clean_answer, [max(chunks, key=lambda c: c["score"])]
