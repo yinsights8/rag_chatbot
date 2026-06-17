@@ -8,6 +8,7 @@ load_dotenv()
 
 
 BASE_URL = os.getenv("ST_BASE_URL")
+# BASE_URL = "http://localhost:8000"
 
 st.set_page_config(page_title="AWS Agreement Q&A", layout="centered")
 
@@ -31,6 +32,13 @@ def analytics():
         return None, response.json().get("detail", "Request failed.")
     return response.json(), None
 
+# render the sources used in the answer
+def render_sources(sources):
+    if sources:
+        st.markdown("**Sources:**")
+        for chunk in sources:
+            st.markdown(f"- **Page {chunk['page']}** (score: {chunk['score']:.2f}):{chunk['text']}")
+            
 
 view = st.radio("View", ["Chat", "Analytics"], horizontal=True)
 
@@ -43,6 +51,7 @@ if view == "Chat":
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.write(message["content"])
+            render_sources(message.get("sources"))
 
     query = st.chat_input("Ask a question about the document")
     if query:
@@ -56,12 +65,10 @@ if view == "Chat":
                 st.error(error)
             else:
                 st.write(result["answer"])
-                if result["source_chunks"]:
-                    with st.expander("Sources"):
-                        for chunk in result["source_chunks"]:
-                            st.markdown(f"**Page {chunk['page']}** (score: {chunk['score']:.2f})")
-                            st.text(chunk["text"])
-                st.session_state.messages.append({"role": "assistant", "content": result["answer"]})
+                render_sources(result["source_chunks"])
+                st.session_state.messages.append(
+                    {"role": "assistant", "content": result["answer"], "sources": result["source_chunks"]}
+                )
 
 else:
     st.title("Analytics")
