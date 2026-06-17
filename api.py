@@ -15,6 +15,7 @@ from rag.db import (
 )
 
 DEFAULT_PDF_PATH = "instructions/AWS_Customer_Agreement.pdf"
+TOP_K = int(os.getenv("TOP_K", 5))  # Default to 4 if not set in environment variables
 
 app = FastAPI(title="RAG Document Q&A API")
 retriever = Retriever()
@@ -53,15 +54,17 @@ def ask(request: AskRequest):
 
     try:
         start = time.perf_counter()
-        chunks = retriever.retrieve(request.query, top_k=4)
-        answer = generate_answer(request.query, chunks)
+        chunks = retriever.retrieve(request.query, top_k=TOP_K)
+        answer, used_chunks = generate_answer(request.query, chunks)
         latency_ms = (time.perf_counter() - start) * 1000
 
         found = not answer_not_found(answer)
         top_score = max((c["score"] for c in chunks), default=None)
         log_query(request.query, answer, found, top_score, latency_ms)
 
-        source_chunks = [{"text": c["text"], "page": c["page"], "score": c["score"]} for c in chunks]
+        source_chunks = [
+            {"text": c["text"], "page": c["page"], "score": c["score"]} for c in used_chunks
+        ]
         return AskResponse(query=request.query, answer=answer, found=found, source_chunks=source_chunks)
     except HTTPException:
         raise
