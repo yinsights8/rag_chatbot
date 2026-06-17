@@ -9,7 +9,7 @@ load_dotenv()
 DATA_PATH = os.getenv("DATA_PATH")
 MODEL_NAME = os.getenv("EMBEDDING_MODEL")
 COLLECTION_NAME = os.getenv("COLLECTION_NAME")
-
+TOP_K = int(os.getenv("TOP_K", 5))  # Default to 5 if not set in environment variables
 
 CHROMA_DIR = f"{DATA_PATH}/chroma_db"
 
@@ -53,7 +53,7 @@ class Retriever:
         if count == 0:
             raise FileNotFoundError("No index found. Call POST /ingest first.")
 
-    def retrieve(self, query: str, top_k: int = 4) -> list[dict]:
+    def retrieve(self, query: str, top_k: int = TOP_K) -> list[dict]:
         """Return top-k most relevant chunks for a query."""
         q_emb = self.model.encode([query]).tolist()
         results = self.collection.query(
