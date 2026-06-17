@@ -5,5 +5,6 @@ chromadb
 langchain_text_splitters
 pymupdf
 fastapi
+streamlit
 numpy
 pandas
