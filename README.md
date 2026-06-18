@@ -71,7 +71,6 @@ flowchart TD
 ## Setup & Run Instructions
 
 ### Prerequisites
-### Prerequisites
 - Python 3.12
 - [Ollama](https://ollama.com) running locally, with the model named in
   `MODEL_NAME` pulled (e.g. `ollama pull llama3.1:latest`)
