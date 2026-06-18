@@ -2,7 +2,7 @@
 
 > A Retrieval-Augmented Generation (RAG) Q&A system built for the Vestaff
 > Junior AI Developer take-home assignment, answering questions about a
-> single provided document — the AWS Customer Agreement. The PDF is parsed
+> single provided document, the AWS Customer Agreement. The PDF is parsed
 > and chunked (`rag/ingestor.py`), embedded with
 > `sentence-transformers/all-MiniLM-L6-v2`, and indexed in a persistent
 > ChromaDB collection (`rag/retriever.py`). A FastAPI backend (`api.py`)
