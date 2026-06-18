@@ -9,7 +9,7 @@
 > exposes `/ingest`, `/ask`, and `/analytics`: each `/ask` call retrieves the
 > top-k most relevant chunks, builds a grounded prompt, generates an answer
 > with a local Ollama model (`rag/generator.py`), and returns the answer
-> together with the exact source chunk(s) used — declining to answer rather
+> together with the exact source chunk(s) used, declining to answer rather
 > than guessing when the document doesn't contain the information. Every
 > `/ask` call is logged to a SQLite table (`rag/db.py`) and surfaced through
 > SQL-backed analytics (most frequent questions, queries with no answer
