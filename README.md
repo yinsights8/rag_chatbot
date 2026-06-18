@@ -43,8 +43,7 @@
   - [Analytics Queries](#analytics-queries)
   - [Frontend](#frontend)
   - [Demo](#demo)
-  - [Assumptions \& Known Limitations](#assumptions--known-limitations)
-
+    
 ## Architecture Overview
 ```mermaid
 flowchart TD
