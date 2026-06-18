@@ -82,8 +82,6 @@ def parse_sources_used(raw_response: str, num_chunks: int) -> tuple[str, list[in
       return clean_answer, indices
 
 
-
-
 def generate_answer(query: str, chunks: list[dict]) -> tuple[str, list[dict]]:
     """
     Run the full generation step.
