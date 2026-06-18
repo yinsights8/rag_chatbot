@@ -8,7 +8,7 @@ import fitz  # PyMuPDF
 
 ### 1. document loader
 
-def parse_and_chunk(pdf_path: str) -> list[dict]:
+def parse_and_chunk(pdf_path: str, chunk_size: int = 700, chunk_overlap: int = 150) -> list[dict]:
     """Parse PDF and return list of chunk dicts with text + metadata."""
     doc = fitz.open(pdf_path)
     full_text_pages = []
@@ -18,8 +18,8 @@ def parse_and_chunk(pdf_path: str) -> list[dict]:
             full_text_pages.append({"text": text, "page": page_num})
 
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size=500,
-        chunk_overlap=50,
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap,
         separators=["\n\n", "\n", ". ", " "],
     )
 
