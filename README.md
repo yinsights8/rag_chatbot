@@ -365,7 +365,3 @@ A `st.radio` toggle switches between two views:
 ## Demo
 
 <img src="rag_pipeline.gif" alt="Demo" width="700">
-
-## Assumptions & Known Limitations
-
-<!-- e.g. single static document, no incremental re-ingestion, local-only LLM, etc. -->
