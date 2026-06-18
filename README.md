@@ -315,10 +315,7 @@ A `st.radio` toggle switches between two views:
 
 ## Demo
 
-<!-- TODO: record a 2-3 min screen capture showing a question being asked
-end-to-end (Chat view, including a source citation) and the Analytics view
-populated with real logged queries, then link or embed it here. Not yet
-recorded. -->
+<img src="rag_pipeline.gif" alt="Demo" width="700">
 
 ## Assumptions & Known Limitations
 
