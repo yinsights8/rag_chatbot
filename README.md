@@ -1,6 +1,21 @@
 # RAG-based Document Q&A System with Analytics Dashboard
 
-> One-paragraph summary: what this project does (RAG Q&A over the AWS Customer Agreement, FastAPI backend, SQL usage logging, Streamlit dashboard).
+> A Retrieval-Augmented Generation (RAG) Q&A system built for the Vestaff
+> Junior AI Developer take-home assignment, answering questions about a
+> single provided document — the AWS Customer Agreement. The PDF is parsed
+> and chunked (`rag/ingestor.py`), embedded with
+> `sentence-transformers/all-MiniLM-L6-v2`, and indexed in a persistent
+> ChromaDB collection (`rag/retriever.py`). A FastAPI backend (`api.py`)
+> exposes `/ingest`, `/ask`, and `/analytics`: each `/ask` call retrieves the
+> top-k most relevant chunks, builds a grounded prompt, generates an answer
+> with a local Ollama model (`rag/generator.py`), and returns the answer
+> together with the exact source chunk(s) used — declining to answer rather
+> than guessing when the document doesn't contain the information. Every
+> `/ask` call is logged to a SQLite table (`rag/db.py`) and surfaced through
+> SQL-backed analytics (most frequent questions, queries with no answer
+> found, average latency). A Streamlit app (`streamlit_app.py`), run as its
+> own process, provides a chat view for asking questions and an analytics
+> view for the dashboard.
 
 ## Table of Contents
 - [RAG-based Document Q\&A System with Analytics Dashboard](#rag-based-document-qa-system-with-analytics-dashboard)
@@ -8,9 +23,12 @@
   - [Architecture Overview](#architecture-overview)
   - [Setup \& Run Instructions](#setup--run-instructions)
     - [Prerequisites](#prerequisites)
+    - [Prerequisites](#prerequisites-1)
     - [Installation](#installation)
     - [Running the backend](#running-the-backend)
+    - [Ingesting the document](#ingesting-the-document)
     - [Running the frontend](#running-the-frontend)
+    - [Asking a question](#asking-a-question)
   - [Design Decisions \& Justifications](#design-decisions--justifications)
     - [Chunking Strategy](#chunking-strategy)
     - [Embedding Model](#embedding-model)
@@ -54,9 +72,21 @@ flowchart TD
 ## Setup & Run Instructions
 
 ### Prerequisites
-- Python version
-- Ollama (or other LLM provider) running locally, model pulled
-- `.env` variables required (list them, no real secrets)
+### Prerequisites
+- Python 3.12
+- [Ollama](https://ollama.com) running locally, with the model named in
+  `MODEL_NAME` pulled (e.g. `ollama pull llama3.1:latest`)
+- A `.env` file in the repo root with these variables set (no real secrets
+  required — `OPENAI_API_KEY` is unused by Ollama but the `openai` client
+  requires the field to be non-empty):
+  ```
+  OPENAI_API_KEY=ollama
+  BASE_URL=http://localhost:11434/v1/
+  MODEL_NAME=llama3.1:latest
+  DATA_PATH=data
+  EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+  COLLECTION_NAME=aws_agreement
+  ```
 
 ### Installation
 ```bash
@@ -64,6 +94,7 @@ flowchart TD
 git clone https://github.com/yinsights8/rag_chatbot.git
 cd rag_chatbot 
 python -m venv .venv
+.venv\Scripts\activate   # on Windows; use `source .venv/bin/activate` on macOS/Linux
 python -r requirements.txt
 ```
 
@@ -73,10 +104,28 @@ python -r requirements.txt
 uvicorn api:app --reload
 ```
 
+Starts the FastAPI app at `http://localhost:8000`.
+
+### Ingesting the document
+```bash
+curl -X POST http://localhost:8000/ingest -H "Content-Type: application/json" -d "{}"
+```
+Uses the default PDF path (`instructions/AWS_Customer_Agreement.pdf`) when
+`pdf_path` is omitted. Must be run once before `/ask` will work.
+
+
 ### Running the frontend
 ```bash
 # command to start Streamlit as a separate process
 streamlit run streamlit_app.py
+```
+
+Runs as a separate process from the FastAPI backend (per the assignment
+requirement), calling it over HTTP at `http://localhost:8000`.
+
+### Asking a question
+```bash
+curl -X POST http://localhost:8000/ask -H "Content-Type: application/json" -d "{\"query\": \"What is the notice period for terminating this agreement?\"}"
 ```
 
 ## Design Decisions & Justifications
